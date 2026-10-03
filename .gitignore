@@ -1,0 +1,18 @@
+#credenciales y variables de entorno
+.env
+
+#entornos virtuales
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+#archivos de configuración local de ViZDoom
+_vizdoom.ini
+
+#archivos temporales de sistema
+.DS_Store
+Thumbs.db
