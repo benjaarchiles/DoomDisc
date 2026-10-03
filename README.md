@@ -14,7 +14,7 @@ UI/UX Libre de Flicker: Estrategia de entrega de archivos adjuntos directos con 
 
 HUD y Progresion Automatica: Monitoreo dinamico de variables del motor (Salud, Armadura, Municion y Arma actual) y transicion automatica de mapas tras completar la salida de cada nivel.
 
-Arquitectura
+# Arquitectura
 El flujo de ejecucion opera de forma desacoplada y asincrona a traves de los siguientes modulos:
 
 Entrada de usuario (Discord Gateway): Los usuarios interactuan con la interfaz de botones expuesta mediante discord.ui.View.
@@ -27,7 +27,7 @@ Captura y compresion: El buffer de pantalla RGB24 se procesa en memoria volatil 
 
 Actualizacion de interfaz: El mensaje original en Discord se actualiza de manera reactiva con la nueva secuencia de fotogramas y el estado del HUD.
 
-Requisitos Previos
+# Requisitos Previos
 Python 3.10 o superior
 
 ViZDoom y dependencias del sistema operativo (C++ build tools / CMake si se compila localmente)
@@ -36,44 +36,37 @@ Archivo de juego compatible (doom1.wad shareware o comercial)
 
 Bot de Discord registrado con permisos para enviar mensajes, adjuntar archivos y leer contenido de mensajes
 
-Instalacion y Configuracion
+# Instalacion y Configuracion
 Clonar el repositorio:
 
-Bash
 git clone [https://github.com/benjaarchiles/DoomDisc.git](https://github.com/benjaarchiles/DoomDisc.git)
 cd DoomDisc
 Crear y activar el entorno virtual:
 
-Bash
 python -m venv venv
-En Windows:
+# En Windows:
 
 PowerShell
 .\venv\Scripts\activate
-En Linux / macOS:
+# En Linux / macOS:
 
-Bash
 source venv/bin/activate
-Instalar dependencias:
+# Instalar dependencias:
 
-Bash
 pip install -r requirements.txt
-Variables de entorno:
+# Variables de entorno:
 Crear un archivo .env en la raiz del proyecto y definir el token del bot:
 
-Fragmento de código
 DISCORD_TOKEN=tu_token_secreto_aqui
 Archivo WAD:
 Asegurate de que el archivo doom1.wad este ubicado en la raiz del proyecto.
 
-Ejecucion
+# Ejecucion
 Inicia el servicio del bot:
 
-Bash
 python bot.py
 En cualquier canal de texto donde el bot tenga permisos, ejecuta:
-
-Plaintext
 !playdoom
-Licencia
-Distribuido bajo la Licencia MIT. Consulta el archivo LICENSE para mas informacion.
+
+# Licencia
+Distribuido bajo la Licencia MIT. Consulta el archivo LICENSE para mas informacion
