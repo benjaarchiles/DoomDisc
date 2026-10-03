@@ -1,10 +1,9 @@
 # Discord Plays DOOM
 
-Una implementación interactiva y asíncrona inspirada en el fenómeno *Twitch Plays Pokémon*, que permite a una comunidad en Discord jugar al clásico **DOOM (1993)** de forma colaborativa mediante votación democrática en tiempo real.
+Una implementación interactiva y asíncrona inspirada en el concepto de Twitch Plays Pokémon, que permite a una comunidad en Discord jugar al clásico DOOM (1993) de forma colaborativa mediante votación democrática en tiempo real.
 
-El proyecto corre el motor **ViZDoom** en segundo plano (headless), capturando los fotogramas de la simulación, procesándolos como secuencias dinámicas en memoria volátil y proyectando la experiencia de juego directamente sobre la interfaz de Discord.
-
-# Caracteristicas Principales
+El proyecto corre el motor ViZDoom en segundo plano (headless), capturando los fotogramas de la simulación, procesándolos como secuencias dinámicas en memoria volátil y proyectando la experiencia de juego directamente sobre la interfaz de Discord.
+Características Principales
 Motor Headless en Tiempo Real: Integración directa con ViZDoom para ejecutar la lógica nativa del juego (mapa base E1M1 y progresión episódica completa).
 
 Renderizado en Memoria (Zero Disk I/O): Generación de secuencias animadas (GIF) directamente en buffers de RAM (io.BytesIO) utilizando Pillow y NumPy, evitando desgaste de almacenamiento secundario y minimizando la latencia.
@@ -15,67 +14,62 @@ UI/UX Libre de Flicker: Estrategia de entrega de archivos adjuntos directos con 
 
 HUD y Progresión Automática: Monitoreo dinámico de variables del motor (Salud, Armadura, Munición y Arma actual) y transición automática de mapas tras completar la salida de cada nivel.
 
-# Arquitectura 
+## Arquitectura
 
-[ Discord Users ]
-       │
-       ▼ (Interacciones de botones)
-[ Discord Gateway / View (discord.py) ]
-       │
-       ▼ (Agregación de votos por ventana temporal)
-[ Bucle de Eventos Asíncrono (asyncio) ]
-       │
-       ▼ (Ejecución de tics de acción)
-[ Motor ViZDoom (C++ Core / Python API) ]
-       │
-       ▼ (Buffer de pantalla RGB24)
-[ Procesamiento de Frames (NumPy & Pillow en RAM) ]
-       │
-       ▼ (Compresión de GIF en io.BytesIO)
-[ Actualización de Mensaje en Discord (message.edit) ]
+El flujo de ejecución opera de forma desacoplada y asíncrona a través de los siguientes módulos:
 
-# Requisitos previos
+1. **Entrada de usuario (Discord Gateway):** Los usuarios interactúan con la interfaz de botones expuesta mediante `discord.ui.View`.
+2. **Agregación de votos:** El bucle asíncrono (`asyncio`) recolecta y pondera las acciones dentro de ventanas temporales controladas.
+3. **Ejecución en el motor:** La acción ganadora se traduce en tics discretos ejecutados por el núcleo de **ViZDoom**.
+4. **Captura y compresión:** El buffer de pantalla RGB24 se procesa en memoria volátil (`io.BytesIO`) con **NumPy** y **Pillow** para generar un archivo GIF sin escribir en disco.
+5. **Actualización de interfaz:** El mensaje original en Discord se actualiza de manera reactiva con la nueva secuencia de fotogramas y el estado del HUD.
 
-python 3.10 o superior
+## Requisitos Previos
 
-ViZDoom y dependencias del sistema operativo (C++ build tools / CMake si se compila localmente)
+* Python 3.10 o superior
+* ViZDoom y dependencias del sistema operativo
+* Archivo de juego compatible (`doom1.wad`)
+* Bot de Discord registrado y configurado
 
-Archivo de juego compatible (doom1.wad shareware o comercial)
+Instalación y Configuración
+Clonar el repositorio:
 
-Bot de Discord registrado con permisos para enviar mensajes, adjuntar archivos y leer contenido de mensajes
+Bash
+git clone [https://github.com/benjaarchiles/DoomDisc.git](https://github.com/benjaarchiles/DoomDisc.git)
+cd DoomDisc
+Crear y activar el entorno virtual:
 
-# Instalación y configuración
+Bash
+python -m venv venv
+# En Windows:
+.\venv\Scripts\activate
+# En Linux / macOS:
+source venv/bin/activate
+Instalar dependencias:
 
-1. Clonar el repositorio:
-    git clone https://github.com/benjaarchiles/DoomDisc.git
-    cd DoomDisc
+Bash
+pip install -r requirements.txt
+Variables de entorno: copia el archivo de ejemplo y añade el token del bot:
 
-2. Crear y activar el entorno virtual:
-    python -m venv venv
-    #En Windows:
-        .\venv\Scripts\activate
-    #En Linux / macOS:
-        source venv/bin/activate
+Bash
+cp .env.example .env
+Dentro de .env:
 
-3. Instalar dependencias:
-    pip install -r requirements.txt
+Fragmento de código
+DISCORD_TOKEN=tu_token_secreto_aqui
+Colocar el archivo WAD:
+Asegúrate de que el archivo doom1.wad esté en la raíz del proyecto.
 
-4. Variables de entorno: copia el archivo de ejemplo y añade el token de tu bot de discord
-    cp .env.example .env
-    DENTRO DE .env
-    DISCORD_TOKEN =tu_token_secreto_aqui
-
-5. Colocar el archivo WAD
-    Asegúrate que el archivo doom1.wad esté en la raiz del proyecto.
-
-# Ejecución
-
+Ejecución
 Inicia el servicio del bot:
-    python bot.py
 
-En cualquier canal de texto que el bot tenga permisos, ejecuta:
-    !playdoom
+Bash
+python bot.py
+En cualquier canal de texto donde el bot tenga permisos, ejecuta:
+
+Plaintext
+!playdoom
 Usa los botones interactivos para votar colectivamente la dirección, los giros, disparos e interacciones con el entorno.
 
-# Licencia 
+Licencia
 Distribuido bajo la Licencia MIT. Consulta el archivo LICENSE para más información.
